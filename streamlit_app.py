@@ -58,7 +58,7 @@ with st.sidebar:
     
     if st.session_state["lang"] != new_lang:
         st.session_state["lang"] = new_lang
-        st.experimental_rerun()  # This triggers instant rerun to apply language
+        st.rerun()  # This triggers instant rerun to apply language
 
 # Define your pages
 pages = {
@@ -66,8 +66,7 @@ pages = {
         st.Page("pages/about.py", title=t("learn_about_us")),
     ],
     t("your_account"): [
-        st.Page("pages/create_account.py", title=t("create_your_account")),
-        st.Page("pages/manage_account.py", title=t("manage_your_account")),
+        st.Page("pages/account.py", title=t("Account settings")),
     ],
     t("resources"): [
         st.Page("pages/demo.py", title=t("try_it_out")),
