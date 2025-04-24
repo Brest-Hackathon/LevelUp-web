@@ -65,7 +65,7 @@ transforming traditional learning into an exciting adventure!
             },
             "image": "https://via.placeholder.com/150",
             "description": {
-                "ru": "Отвечает за фронтенд и основной функционал.",
+                "ru": "фронтенд и основной функционал.",
                 "en": "Responsible for frontend and core functionality.",
                 "be": "Адказвае за фронтэнд і асноўны функцыянал."
             }
@@ -83,7 +83,7 @@ transforming traditional learning into an exciting adventure!
             },
             "image": "https://via.placeholder.com/150",
             "description": {
-                "ru": "Отвечает за БД и АПИ взаимодействия.",
+                "ru": "БД и АПИ взаимодействия.",
                 "en": "Responsible for database and API interactions.",
                 "be": "Адказвае за базу даных і API ўзаемадзеяння."
             }
@@ -101,7 +101,7 @@ transforming traditional learning into an exciting adventure!
             },
             "image": "https://via.placeholder.com/150",
             "description": {
-                "ru": "Отвечает за алгоритм генерации карточек.",
+                "ru": "алгоритм генерации карточек.",
                 "en": "Responsible for card generation algorithm.",
                 "be": "Адказвае за алгарытм генерацыі картак."
             }
@@ -155,7 +155,7 @@ transforming traditional learning into an exciting adventure!
             },
             "image": "https://via.placeholder.com/150",
             "description": {
-                "ru": "Отвечает за дизайн страниц.",
+                "ru": "дизайн страниц.",
                 "en": "Responsible for page design.",
                 "be": "Адказвае за дызайн старонак."
             }
@@ -173,7 +173,7 @@ transforming traditional learning into an exciting adventure!
             },
             "image": "https://via.placeholder.com/150",
             "description": {
-                "ru": "Отвечает за дизайн страниц.",
+                "ru": "дизайн страниц.",
                 "en": "Responsible for page design.",
                 "be": "Адказвае за дызайн старонак."
             }

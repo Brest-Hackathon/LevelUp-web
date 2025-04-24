@@ -37,6 +37,30 @@ def init_db():
             password_hash TEXT
         )
     """)
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS user_profiles (
+            username TEXT PRIMARY KEY
+        )
+    """)
+    conn.commit()
+    conn.close()
+
+def ensure_user_profiles_columns():
+    conn = sqlite3.connect("users.db")
+    cur = conn.cursor()
+    cur.execute("PRAGMA table_info(user_profiles)")
+    existing_columns = {row[1] for row in cur.fetchall()}
+
+    columns_to_add = {
+        "nickname": "TEXT",
+        "status": "TEXT",
+        "avatar_path": "TEXT"
+    }
+
+    for column, definition in columns_to_add.items():
+        if column not in existing_columns:
+            cur.execute(f"ALTER TABLE user_profiles ADD COLUMN {column} {definition}")
+    
     conn.commit()
     conn.close()
 
@@ -45,6 +69,7 @@ def create_user(login, email, password_hash):
     cur = conn.cursor()
     try:
         cur.execute("INSERT INTO users (login, email, password_hash) VALUES (?, ?, ?)", (login, email, password_hash))
+        cur.execute("INSERT INTO user_profiles (username) VALUES (?)", (login,))
         conn.commit()
         return True
     except sqlite3.IntegrityError:
@@ -60,8 +85,9 @@ def authenticate_user(login, password_hash):
     conn.close()
     return user is not None
 
-# Initialize DB
+# Initialize DB and ensure schema is complete
 init_db()
+ensure_user_profiles_columns()
 
 # --- UI Tabs ---
 tab1, tab2 = st.tabs([t("signin"), t("signup")])
@@ -78,6 +104,7 @@ with tab1:
             salted_pass = st.session_state["salt"] + password
             password_hash = hashlib.sha256(salted_pass.encode()).hexdigest()
             if authenticate_user(login, password_hash):
+                st.session_state["username"] = login
                 st.success(t("success_signin"))
             else:
                 st.error(t("error_signin"))
@@ -96,6 +123,7 @@ with tab2:
             password_hash = hashlib.sha256(salted_pass.encode()).hexdigest()
             success = create_user(login, email, password_hash)
             if success:
+                st.session_state["username"] = login
                 st.success(t("success_signup"))
             else:
                 st.error(f"{t('login')} {login} {t('error_signin')}")
