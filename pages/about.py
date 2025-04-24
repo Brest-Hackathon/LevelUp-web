@@ -63,7 +63,7 @@ transforming traditional learning into an exciting adventure!
                 "en": "Developer",
                 "be": "Распрацоўшчык"
             },
-            "image": "https://via.placeholder.com/150",
+            "image": "https://github.com/LevelUP-platform/LevelUp-web/blob/main/images/ivan.jpg?raw=true",
             "description": {
                 "ru": "фронтенд и основной функционал.",
                 "en": "Responsible for frontend and core functionality.",
@@ -99,7 +99,7 @@ transforming traditional learning into an exciting adventure!
                 "en": "Developer",
                 "be": "Распрацоўшчык"
             },
-            "image": "https://via.placeholder.com/150",
+            "image": "https://github.com/LevelUP-platform/LevelUp-web/blob/main/images/maxim.jpg?raw=true",
             "description": {
                 "ru": "алгоритм генерации карточек.",
                 "en": "Responsible for card generation algorithm.",
@@ -117,7 +117,7 @@ transforming traditional learning into an exciting adventure!
                 "en": "Analyst",
                 "be": "Аналітык"
             },
-            "image": "https://via.placeholder.com/150",
+            "image": "https://github.com/LevelUP-platform/LevelUp-web/blob/main/images/vladik.jpg?raw=true",
             "description": {
                 "ru": "Провел анализ аналогов и среднестатистического пользователя.",
                 "en": "Conducted analysis of analogs and the average user.",
@@ -135,7 +135,7 @@ transforming traditional learning into an exciting adventure!
                 "en": "Analyst",
                 "be": "Аналітык"
             },
-            "image": "https://via.placeholder.com/150",
+            "image": "https://github.com/LevelUP-platform/LevelUp-web/blob/main/images/rita.jpg?raw=true",
             "description": {
                 "ru": "Провела анализ аналогов и среднестатистического пользователя.",
                 "en": "Conducted analysis of analogs and the average user.",
@@ -153,7 +153,7 @@ transforming traditional learning into an exciting adventure!
                 "en": "UI-UX Designer",
                 "be": "UI-UX дызайнер"
             },
-            "image": "https://via.placeholder.com/150",
+            "image": "https://github.com/LevelUP-platform/LevelUp-web/blob/main/images/Vitaly.jpg?raw=true",
             "description": {
                 "ru": "дизайн страниц.",
                 "en": "Responsible for page design.",
@@ -171,7 +171,7 @@ transforming traditional learning into an exciting adventure!
                 "en": "UI-UX Designer",
                 "be": "UI-UX дызайнер"
             },
-            "image": "https://via.placeholder.com/150",
+            "image": "https://github.com/LevelUP-platform/LevelUp-web/blob/main/images/kostya.jpg?raw=true",
             "description": {
                 "ru": "дизайн страниц.",
                 "en": "Responsible for page design.",
