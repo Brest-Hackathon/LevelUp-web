@@ -1,14 +1,18 @@
 import streamlit as st
 import hashlib
-import sqlite3
+from xata.client import Client
 
-# --- Language setup ---
+# Ensure language is set
 if 'lang' not in st.session_state:
     st.session_state["lang"] = "ru"
 
 if 'salt' not in st.session_state:
     st.session_state["salt"] = st.secrets["salt"]
 
+# Initialize Xata client
+xata = Client.from_url('https://<your_workspace>.xata.sh/<your_region>/<your_database>', api_key="<your_api_key>")
+
+# Localized text
 texts = {
     "signup": {"ru": "Регистрация", "en": "Sign Up", "by": "Рэгістрацыя"},
     "signin": {"ru": "Вход", "en": "Log In", "by": "Увайсці"},
@@ -26,44 +30,7 @@ def t(key):
     lang = st.session_state["lang"]
     return texts.get(key, {}).get(lang, key)
 
-# --- Database setup ---
-def init_db():
-    conn = sqlite3.connect("users.db")
-    cur = conn.cursor()
-    cur.execute("""
-        CREATE TABLE IF NOT EXISTS users (
-            login TEXT PRIMARY KEY,
-            email TEXT,
-            password_hash TEXT
-        )
-    """)
-    conn.commit()
-    conn.close()
-
-def create_user(login, email, password_hash):
-    conn = sqlite3.connect("users.db")
-    cur = conn.cursor()
-    try:
-        cur.execute("INSERT INTO users (login, email, password_hash) VALUES (?, ?, ?)", (login, email, password_hash))
-        conn.commit()
-        return True
-    except sqlite3.IntegrityError:
-        return False
-    finally:
-        conn.close()
-
-def authenticate_user(login, password_hash):
-    conn = sqlite3.connect("users.db")
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM users WHERE login = ? AND password_hash = ?", (login, password_hash))
-    user = cur.fetchone()
-    conn.close()
-    return user is not None
-
-# Initialize DB
-init_db()
-
-# --- UI Tabs ---
+# UI tabs
 tab1, tab2 = st.tabs([t("signin"), t("signup")])
 
 # --- LOG IN TAB ---
@@ -75,10 +42,16 @@ with tab1:
         submit = st.form_submit_button(t("submit_signin"))
 
         if submit:
-            salted_pass = st.session_state["salt"] + password
-            password_hash = hashlib.sha256(salted_pass.encode()).hexdigest()
-            if authenticate_user(login, password_hash):
-                st.success(t("success_signin"))
+            # Query Xata database for the user
+            result = xata.db.users.filter(login=login).get()
+            if result:
+                user = result[0]
+                salted_pass = st.session_state["salt"] + password
+                password_hash = hashlib.sha256(salted_pass.encode()).hexdigest()
+                if password_hash == user["password_hash"]:
+                    st.success(t("success_signin"))
+                else:
+                    st.error(t("error_signin"))
             else:
                 st.error(t("error_signin"))
 
@@ -92,10 +65,17 @@ with tab2:
         submit = st.form_submit_button(t("submit_signup"))
 
         if submit:
-            salted_pass = st.session_state["salt"] + password
-            password_hash = hashlib.sha256(salted_pass.encode()).hexdigest()
-            success = create_user(login, email, password_hash)
-            if success:
-                st.success(t("success_signup"))
-            else:
+            # Check if login already exists
+            result = xata.db.users.filter(login=login).get()
+            if result:
                 st.error(f"{t('login')} {login} {t('error_signin')}")
+            else:
+                salted_pass = st.session_state["salt"] + password
+                password_hash = hashlib.sha256(salted_pass.encode()).hexdigest()
+                # Insert new user into the Xata database
+                xata.db.users.create({
+                    "login": login,
+                    "email": email,
+                    "password_hash": password_hash
+                })
+                st.success(t("success_signup"))
