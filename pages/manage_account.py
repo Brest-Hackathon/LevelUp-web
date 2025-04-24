@@ -13,7 +13,6 @@ os.makedirs(AVATAR_DIR, exist_ok=True)
 def init_db():
     conn = sqlite3.connect("users.db")
     cur = conn.cursor()
-    # Таблица профиля
     cur.execute("""
         CREATE TABLE IF NOT EXISTS user_profiles (
             username TEXT PRIMARY KEY,
@@ -22,7 +21,6 @@ def init_db():
             avatar_path TEXT
         )
     """)
-    # Таблица статистики задач
     cur.execute("""
         CREATE TABLE IF NOT EXISTS task_stats (
             username TEXT,
@@ -33,9 +31,26 @@ def init_db():
     conn.commit()
     conn.close()
 
-init_db()
+def ensure_user_profiles_columns():
+    conn = sqlite3.connect("users.db")
+    cur = conn.cursor()
+    cur.execute("PRAGMA table_info(user_profiles)")
+    existing_columns = {row[1] for row in cur.fetchall()}
 
-# --- Вспомогательные функции ---
+    columns_to_add = {
+        "nickname": "TEXT",
+        "status": "TEXT",
+        "avatar_path": "TEXT"
+    }
+
+    for column, definition in columns_to_add.items():
+        if column not in existing_columns:
+            cur.execute(f"ALTER TABLE user_profiles ADD COLUMN {column} {definition}")
+    
+    conn.commit()
+    conn.close()
+
+# --- Получение профиля пользователя ---
 def get_user_profile(username):
     conn = sqlite3.connect("users.db")
     cur = conn.cursor()
@@ -44,6 +59,7 @@ def get_user_profile(username):
     conn.close()
     return row if row else ("", "", "")
 
+# --- Сохранение профиля пользователя ---
 def save_user_profile(username, nickname, status, avatar_path=None):
     conn = sqlite3.connect("users.db")
     cur = conn.cursor()
@@ -62,6 +78,7 @@ def save_user_profile(username, nickname, status, avatar_path=None):
     conn.commit()
     conn.close()
 
+# --- Получение статистики задач ---
 def get_task_stats(username):
     conn = sqlite3.connect("users.db")
     df = pd.read_sql_query("SELECT date, solved_tasks FROM task_stats WHERE username = ?", conn, params=(username,))
@@ -70,15 +87,16 @@ def get_task_stats(username):
         df['date'] = pd.to_datetime(df['date'])
     return df
 
+# --- Инициализация ---
+init_db()
+ensure_user_profiles_columns()
+
 # --- Проверка авторизации ---
 if "username" not in st.session_state:
-    st.warning("⚠️ Вы не авторизованы. Пожалуйста, войдите в систему, чтобы просматривать и редактировать свой профиль.")
+    st.warning("⚠️ Вы не авторизованы. Пожалуйста, войдите в систему.")
     st.stop()
 
-# --- Получение текущего пользователя ---
-username = st.session_state.username
-
-# --- Загрузка данных профиля ---
+username = st.session_state["username"]
 nickname, status, avatar_path = get_user_profile(username)
 
 st.title("👤 Управление аккаунтом")
@@ -96,9 +114,11 @@ with col1:
 
     uploaded_file = st.file_uploader("Загрузить аватар", type=["png", "jpg", "jpeg"])
     if uploaded_file:
-        avatar_path = os.path.join(AVATAR_DIR, f"{username}.png")
+        ext = os.path.splitext(uploaded_file.name)[1].lower()
+        avatar_path = os.path.join(AVATAR_DIR, f"{username}{ext}")
         with open(avatar_path, "wb") as f:
             f.write(uploaded_file.read())
+        save_user_profile(username, nickname, status, avatar_path)
         st.success("Аватар обновлён!")
 
 with col2:
@@ -106,7 +126,6 @@ with col2:
     with st.form("profile_form"):
         nickname_input = st.text_input("Никнейм", value=nickname)
         status_input = st.text_input("Статус", value=status, help="Например: 'Начинающий разработчик'")
-
         save_profile = st.form_submit_button("💾 Сохранить изменения")
         if save_profile:
             save_user_profile(username, nickname_input, status_input, avatar_path)
@@ -114,7 +133,6 @@ with col2:
 
 # --- Статистика решённых задач ---
 st.subheader("📈 Статистика решённых задач")
-
 task_stats_df = get_task_stats(username)
 
 if not task_stats_df.empty:
@@ -129,9 +147,8 @@ if not task_stats_df.empty:
 else:
     st.info("Нет данных о решённых задачах. Начните решать задачи, чтобы увидеть прогресс!")
 
-# --- Выход из аккаунта ---
+# --- Кнопка выхода ---
 st.divider()
-logout = st.button("🚪 Выйти из аккаунта")
-if logout:
+if st.button("🚪 Выйти из аккаунта"):
     st.session_state.clear()
     st.success("Вы вышли из аккаунта!")
