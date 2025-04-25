@@ -19,6 +19,9 @@ translations = {
         "community": "Community",
         "join_chat": "Join our chat",
         "forum": "Forum",
+        "cards": "Cards",
+        "study_space": "Studying Space",
+        "community": "🌐 Community"
     },
     "ru": {
         "language_selection": "Выбор языка",
@@ -33,6 +36,9 @@ translations = {
         "community": "Сообщество",
         "join_chat": "Присоединяйтесь к чату",
         "forum": "Форум",
+        "cards": "Карточки",
+        "study_space": "Место для учебы",
+        "community": "🌐 Сообщество",
     },
     "by": {
         "language_selection": "Выбар мовы",
@@ -47,6 +53,9 @@ translations = {
         "community": "Супольнасць",
         "join_chat": "Далучайцеся да чату",
         "forum": "Форум",
+        "cards": "Карточкі",
+        "study_space": "Месца для вучобы",
+        "community": "🌐 Супольнасць",
     },
 }
 
@@ -77,13 +86,13 @@ pages = {
     t("your_account"): [
         st.Page("pages/account.py", title=t("Account settings")),
     ],
-    "🌐 Community": [
-        st.Page("pages/community.py", title="Join our chat"),
-        st.Page("pages/forum.py", title="Forum"),
+    t("community"): [
+        st.Page("pages/community.py", title=t("join_chat")),
+        st.Page("pages/forum.py", title=t("forum")),
     ],
-    t("resources"): [
-        st.Page("pages/demo.py", title=t("try_it_out")),
-    ],
+    t("study_space"): [
+        st.Page("pages/cards.py", title=t("cards"))
+    ]
 }
 
 pg = st.navigation(pages)
