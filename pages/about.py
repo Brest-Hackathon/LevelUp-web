@@ -53,7 +53,7 @@ translations = {
         {
             "name": {"ru": "Демешко Виктор", "en": "Demeshko Victor", "be": "Дымешка Віктар"},
             "role": {"ru": "Разработчик", "en": "Developer", "be": "Распрацоўшчык"},
-            "image": "ivan.jpg",
+            "image": "viktor.jpg",
             "description": {"ru": "БД Взаимодействия, АПИ.", "en": "DB interactions, API.", "be": "БД узаемадзеяння, API."}
         },
         {
