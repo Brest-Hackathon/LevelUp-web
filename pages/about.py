@@ -122,17 +122,17 @@ translations = {
 Связаться с нами:
 - Email: afanasieffivan@gmail.com
 - Телефон: +375 (44) 508-85-75
-- GitHub: https://github.com/Brest-Hackathon
+- GitHub: https://github.com/LevelUP-platform
 """,
         "en": """Contact us:
 - Email: afanasieffivan@gmail.com
 - Phone: +375 (44) 508-85-75
-- GitHub: https://github.com/Brest-Hackathon
+- GitHub: https://github.com/LevelUP-platform
 """,
         "be": """Звяжыцеся з намі:
 - Email: afanasieffivan@gmail.com
 - Тэлефон: +375 (44) 508-85-75
-- GitHub: https://github.com/Brest-Hackathon
+- GitHub: https://github.com/LevelUP-platform
 """
     },
     "conclusion": {
