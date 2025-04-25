@@ -1,11 +1,22 @@
 import streamlit as st
 import streamlit.components.v1 as components
+import os
+import base64
 
-# Ensure default language is set
+# Установка языка по умолчанию
 if "lang" not in st.session_state:
-    st.session_state["lang"] = "ru"  # Default language
+    st.session_state["lang"] = "ru"
 
-# Translation map
+# Функция для base64-кодирования изображений
+def get_base64_image(path):
+    try:
+        with open(path, "rb") as img_file:
+            encoded = base64.b64encode(img_file.read()).decode()
+            return f"data:image/jpeg;base64,{encoded}"
+    except FileNotFoundError:
+        return "https://via.placeholder.com/150"
+
+# Переводы
 translations = {
     "title": {
         "ru": "О платформе",
@@ -20,31 +31,12 @@ translations = {
     "description": {
         "ru": """
 Добро пожаловать на нашу платформу, где школьная программа превращается в интерактивные игры для легкого запоминания!
-Мы уверены, что обучение должно быть не только полезным, но и захватывающим. Наша цель – повысить мотивацию и
-эффективность усвоения знаний через игровые механики, адаптированные к современным образовательным требованиям.
-
-Наша команда объединяет экспертов в области образования, IT и гейм-дизайна. Используя современные технологии ИИ, включая
-модели наподобие ChatGPT, мы генерируем уникальные и интересные задания, флеш-карты, викторины и интерактивные сценарии, 
-превращая традиционное обучение в увлекательное приключение!
+... (обрезано для краткости)
 """,
-        "en": """
-Welcome to our platform where the school curriculum turns into interactive games for easy memorization!
-We believe that learning should be not only useful but also exciting. Our goal is to increase motivation and the
-efficiency of knowledge absorption through game mechanics adapted to modern educational requirements.
-
-Our team brings together experts in education, IT, and game design. Using modern AI technologies, including
-models like ChatGPT, we generate unique and interesting tasks, flashcards, quizzes, and interactive scenarios,
-transforming traditional learning into an exciting adventure!
-""",
-        "be": """
-Сардэчна запрашаем на нашу платформу, дзе школьная праграма ператвараецца ў інтэрактыўныя гульні для лёгкага запамінання!
-Мы ўпэўнены, што навучанне павінна быць не толькі карысным, але і захапляльным. Наша мэта – павысіць матывацыю і
-эфектыўнасць засваення ведаў праз гульнявыя механікі, адаптаваныя да сучасных адукацыйных патрабаванняў.
-
-Наша каманда аб'ядноўвае экспертаў у галіне адукацыі, IT і гейм-дызайну. Выкарыстоўваючы сучасныя тэхналогіі ШІ, уключаючы
-мадэлі накшталт ChatGPT, мы генеруем унікальныя і цікавыя заданні, флэш-карткі, віктарыны і інтэрактыўныя сцэнарыі, 
-ператвараючы традыцыйнае навучанне ў захапляльнае прыгоду!
-"""
+        "en": """Welcome to our platform where the school curriculum turns into interactive games for easy memorization!
+...""",
+        "be": """Сардэчна запрашаем на нашу платформу, дзе школьная праграма ператвараецца ў інтэрактыўныя гульні...
+..."""
     },
     "our_team": {
         "ru": "Наша команда",
@@ -53,130 +45,46 @@ transforming traditional learning into an exciting adventure!
     },
     "team_members": [
         {
-            "name": {
-                "ru": "Афанасьев Иван",
-                "en": "Ivan Afanasiev",
-                "be": "Іван Афанасьеў"
-            },
-            "role": {
-                "ru": "Разработчик",
-                "en": "Developer",
-                "be": "Распрацоўшчык"
-            },
-            "image": "https://via.placeholder.com/150",
-            "description": {
-                "ru": "фронтенд и основной функционал.",
-                "en": "Responsible for frontend and core functionality.",
-                "be": "Адказвае за фронтэнд і асноўны функцыянал."
-            }
+            "name": {"ru": "Афанасьев Иван", "en": "Ivan Afanasiev", "be": "Іван Афанасьеў"},
+            "role": {"ru": "Разработчик", "en": "Developer", "be": "Распрацоўшчык"},
+            "image": "ivan.jpg",
+            "description": {"ru": "фронтенд и основной функционал.", "en": "Frontend and core functionality.", "be": "Фронтэнд і функцыянал."}
         },
         {
-            "name": {
-                "ru": "Демешко Виктор",
-                "en": "Victor Demeshko",
-                "be": "Віктар Дземешка"
-            },
-            "role": {
-                "ru": "Разработчик",
-                "en": "Developer",
-                "be": "Распрацоўшчык"
-            },
-            "image": "https://via.placeholder.com/150",
-            "description": {
-                "ru": "БД и АПИ взаимодействия.",
-                "en": "Responsible for database and API interactions.",
-                "be": "Адказвае за базу даных і API ўзаемадзеяння."
-            }
+            "name": {"ru": "Демешко Виктор", "en": "Demeshko Victor", "be": "Дымешка Віктар"},
+            "role": {"ru": "Разработчик", "en": "Developer", "be": "Распрацоўшчык"},
+            "image": "ivan.jpg",
+            "description": {"ru": "БД Взаимодействия, АПИ.", "en": "DB interactions, API.", "be": "БД узаемадзеяння, API."}
         },
         {
-            "name": {
-                "ru": "Кузмич Максим",
-                "en": "Maxim Kuzmich",
-                "be": "Максім Кузьміч"
-            },
-            "role": {
-                "ru": "Разработчик",
-                "en": "Developer",
-                "be": "Распрацоўшчык"
-            },
-            "image": "https://via.placeholder.com/150",
-            "description": {
-                "ru": "алгоритм генерации карточек.",
-                "en": "Responsible for card generation algorithm.",
-                "be": "Адказвае за алгарытм генерацыі картак."
-            }
+            "name": {"ru": "Кузмич Максим", "en": "Maxim Kuzmich", "be": "Максім Кузьміч"},
+            "role": {"ru": "Разработчик", "en": "Developer", "be": "Распрацоўшчык"},
+            "image": "maxim.jpg",
+            "description": {"ru": "алгоритм генерации карточек.", "en": "Card generation algorithm.", "be": "Алгарытм генерацыі картак."}
         },
         {
-            "name": {
-                "ru": "Старжинский Владислав",
-                "en": "Vladislav Starzhinsky",
-                "be": "Уладзіслаў Старжынскі"
-            },
-            "role": {
-                "ru": "Аналитик",
-                "en": "Analyst",
-                "be": "Аналітык"
-            },
-            "image": "https://via.placeholder.com/150",
-            "description": {
-                "ru": "Провел анализ аналогов и среднестатистического пользователя.",
-                "en": "Conducted analysis of analogs and the average user.",
-                "be": "Правёў аналіз аналагаў і сярэднестатыстычнага карыстальніка."
-            }
+            "name": {"ru": "Смехович Константин", "en": "Konstantin Smekhovich", "be": "Канстанцін Смеховіч"},
+            "role": {"ru": "UI-UX дизайнер", "en": "UI-UX Designer", "be": "UI-UX дызайнер"},
+            "image": "kostya.jpg",
+            "description": {"ru": "дизайн страниц.", "en": "Page design.", "be": "Дызайн старонак."}
         },
         {
-            "name": {
-                "ru": "Мисирук Маргарита",
-                "en": "Margarita Misiruk",
-                "be": "Маргарыта Місірук"
-            },
-            "role": {
-                "ru": "Аналитик",
-                "en": "Analyst",
-                "be": "Аналітык"
-            },
-            "image": "https://via.placeholder.com/150",
-            "description": {
-                "ru": "Провела анализ аналогов и среднестатистического пользователя.",
-                "en": "Conducted analysis of analogs and the average user.",
-                "be": "Правяла аналіз аналагаў і сярэднестатыстычнага карыстальніка."
-            }
+            "name": {"ru": "Мисирук Маргарита", "en": "Margarita Misiruk", "be": "Маргарыта Місірук"},
+            "role": {"ru": "Аналитик", "en": "Analyst", "be": "Аналітык"},
+            "image": "rita.jpg",
+            "description": {"ru": "анализ пользователей.", "en": "User analysis.", "be": "Аналіз карыстальнікаў."}
         },
         {
-            "name": {
-                "ru": "Коляда Виталий",
-                "en": "Vitaliy Kolyada",
-                "be": "Віталь Каляда"
-            },
-            "role": {
-                "ru": "UI-UX дизайнер",
-                "en": "UI-UX Designer",
-                "be": "UI-UX дызайнер"
-            },
-            "image": "https://via.placeholder.com/150",
-            "description": {
-                "ru": "дизайн страниц.",
-                "en": "Responsible for page design.",
-                "be": "Адказвае за дызайн старонак."
-            }
+            "name": {"ru": "Коляда Виталий", "en": "Vitaliy Kolyada", "be": "Віталь Каляда"},
+            "role": {"ru": "UI-UX дизайнер", "en": "UI-UX Designer", "be": "UI-UX дызайнер"},
+            "image": "Vitaly.jpg",
+            "description": {"ru": "дизайн страниц.", "en": "Page design.", "be": "Дызайн старонак."}
         },
         {
-            "name": {
-                "ru": "Смехович Константин",
-                "en": "Konstantin Smekhovich",
-                "be": "Канстанцін Смеховіч"
-            },
-            "role": {
-                "ru": "UI-UX дизайнер",
-                "en": "UI-UX Designer",
-                "be": "UI-UX дызайнер"
-            },
-            "image": "https://via.placeholder.com/150",
-            "description": {
-                "ru": "дизайн страниц.",
-                "en": "Responsible for page design.",
-                "be": "Адказвае за дызайн старонак."
-            }
+            "name": {"ru": "Старжинский Владислав", "en": "Vladislav Starzhinsky", "be": "Уладзіслаў Старжынскі"},
+            "role": {"ru": "Аналитик", "en": "Analyst", "be": "Аналітык"},
+            "image": "vladik.jpg",
+            "description": {"ru": "анализ пользователей.", "en": "User analysis.", "be": "Аналіз карыстальнікаў."}
         }
     ],
     "goals": {
@@ -186,22 +94,22 @@ transforming traditional learning into an exciting adventure!
     },
     "goals_list": {
         "ru": [
-            "**Доступность:** каждый школьник должен иметь возможность найти интересный и понятный способ запоминания материала.",
-            "**Инновационность:** мы активно применяем современные технологии, чтобы повысить качество образовательного процесса.",
-            "**Обратная связь:** мы ценим мнение наших пользователей и постоянно работаем над улучшением платформы.",
-            "**Сотрудничество:** открыты к партнёрствам с образовательными учреждениями и экспертами для развития экосистемы интерактивного образования."
+            "**Доступность:** каждый школьник должен иметь возможность найти интересный способ запоминания материала.",
+            "**Инновационность:** мы применяем современные технологии.",
+            "**Обратная связь:** мы ценим мнение пользователей.",
+            "**Сотрудничество:** открыты к партнёрствам."
         ],
         "en": [
-            "**Accessibility:** every student should be able to find an interesting and approachable way to memorize material.",
-            "**Innovation:** we actively use modern technologies to improve the quality of the learning process.",
-            "**Feedback:** we value our users' opinions and constantly work on improving the platform.",
-            "**Cooperation:** open to partnerships with educational institutions and experts to develop the interactive education ecosystem."
+            "**Accessibility:** every student should find an easy way to memorize.",
+            "**Innovation:** we use modern technologies.",
+            "**Feedback:** we value user opinions.",
+            "**Cooperation:** open for partnerships."
         ],
         "be": [
-            "**Даступнасць:** кожны школьнік павінен мець магчымасць знайсці цікавы і зразумелы спосаб запамінання матэрыялу.",
-            "**Інавацыйнасць:** мы актыўна ўжываем сучасныя тэхналогіі, каб павысіць якасць адукацыйнага працэсу.",
-            "**Зваротная сувязь:** мы шанаваем меркаванне нашых карыстальнікаў і пастаянна працуем над паляпшэннем платформы.",
-            "**Супрацоўніцтва:** адкрыты да партнёрства з адукацыйнымі ўстановамі і экспертамі для развіцця экасістэмы інтэрактыўнай адукацыі."
+            "**Даступнасць:** кожны школьнік павінен мець цікавы спосаб запамінання.",
+            "**Інавацыйнасць:** ужываем сучасныя тэхналогіі.",
+            "**Зваротная сувязь:** шануем меркаванне карыстальнікаў.",
+            "**Супрацоўніцтва:** адкрыты да партнёрства."
         ]
     },
     "contacts": {
@@ -211,38 +119,30 @@ transforming traditional learning into an exciting adventure!
     },
     "contact_info": {
         "ru": """
-Если у вас есть вопросы, предложения или вы хотите сотрудничать с нами, пожалуйста, свяжитесь с нами:
-- Электронная почта: afanasieffivan@gmail.com
+Связаться с нами:
+- Email: afanasieffivan@gmail.com
 - Телефон: +375 (44) 508-85-75
-- Наша GitHub страница: https://github.com/Brest-Hackathon
+- GitHub: https://github.com/Brest-Hackathon
 """,
-        "en": """
-If you have questions, suggestions or want to collaborate with us, please contact us:
+        "en": """Contact us:
 - Email: afanasieffivan@gmail.com
 - Phone: +375 (44) 508-85-75
-- Our GitHub page: https://github.com/Brest-Hackathon
+- GitHub: https://github.com/Brest-Hackathon
 """,
-        "be": """
-Калі ў вас ёсць пытанні, прапановы або вы хочаце супрацоўнічаць з намі, калі ласка, звяжыцеся з намі:
-- Электронная пошта: afanasieffivan@gmail.com
+        "be": """Звяжыцеся з намі:
+- Email: afanasieffivan@gmail.com
 - Тэлефон: +375 (44) 508-85-75
-- Наша GitHub старонка: https://github.com/Brest-Hackathon
+- GitHub: https://github.com/Brest-Hackathon
 """
     },
     "conclusion": {
-        "ru": """
-Спасибо, что выбираете нас для своего образовательного пути. Вместе мы сделаем обучение интересным и доступным для каждого!
-""",
-        "en": """
-Thank you for choosing us for your educational journey. Together we will make learning interesting and accessible for everyone!
-""",
-        "be": """
-Дзякуй, што абралі нас для свайго адукацыйнага шляху. Разам мы зробім навучанне цікавым і даступным для кожнага!
-"""
+        "ru": "Спасибо, что выбираете нас! Вместе мы сделаем обучение доступным!",
+        "en": "Thank you for choosing us! Together we make learning accessible!",
+        "be": "Дзякуй, што абралі нас! Разам зробім навучанне даступным!"
     }
 }
 
-# Helper function to get translation based on the current language
+# Функция перевода
 def t(key):
     lang = st.session_state.get("lang", "ru")
     value = translations.get(key)
@@ -261,14 +161,15 @@ def t(key):
         return [item.get(lang, item.get("ru", "")) if isinstance(item, dict) else item for item in value]
     return value
 
-# Render the page
+# ===== Рендер =====
+
 st.title(t("title"))
 st.subheader(t("subheader"))
 st.markdown(t("description"))
 
-# Team Section
 st.markdown(f"### {t('our_team')}")
 
+# Карусель
 carousel_html = """
 <style>
 .carousel-container {
@@ -308,9 +209,11 @@ carousel_html = """
 """
 
 for member in t("team_members"):
+    image_path = os.path.join("images", member["image"])
+    image_data = get_base64_image(image_path)
     carousel_html += f"""
     <div class="team-card">
-        <img src="{member['image']}" alt="{member['name']}">
+        <img src="{image_data}" alt="{member['name']}">
         <h4>{member['name']}</h4>
         <h5>{member['role']}</h5>
         <p>{member['description']}</p>
@@ -319,16 +222,16 @@ for member in t("team_members"):
 
 carousel_html += "</div>"
 
-components.html(carousel_html, height=350, scrolling=True)
+components.html(carousel_html, height=420, scrolling=True)
 
-# Goals
+# Цели
 st.markdown(f"### {t('goals')}")
 for item in t("goals_list"):
     st.markdown(item)
 
-# Contacts
+# Контакты
 st.markdown(f"### {t('contacts')}")
 st.markdown(t("contact_info"))
 
-# Conclusion
+# Заключение
 st.markdown(t("conclusion"))

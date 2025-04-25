@@ -1,44 +1,49 @@
 import streamlit as st
 import sqlite3
 import os
+from PIL import Image
 
-AVATAR_PLACEHOLDER = "https://via.placeholder.com/80"
+# --- Константы ---
+AVATAR_DIR = "avatars"
 
-# --- Получение пользователей с фильтрацией ---
-def search_users_by_nickname(query):
+def get_user_data_by_nickname(nickname):
     conn = sqlite3.connect("users.db")
     cur = conn.cursor()
     cur.execute("""
-        SELECT username, nickname, avatar_path FROM user_profiles
-        WHERE nickname LIKE ?
-        ORDER BY nickname COLLATE NOCASE
-    """, (f"%{query}%",))
-    results = cur.fetchall()
+        SELECT u.login, p.nickname, p.status, p.avatar_path, u.signup_date, u.last_login, p.about_me
+        FROM users u
+        JOIN user_profiles p ON u.login = p.username
+        WHERE p.nickname = ?
+    """, (nickname,))
+    row = cur.fetchone()
     conn.close()
-    return results
+    return row
 
-# --- Интерфейс ---
-st.title("🔎 Поиск пользователей")
+st.title("🔍 Поиск пользователя по никнейму")
 
-search_query = st.text_input("Введите никнейм для поиска")
+search_nickname = st.text_input("Введите никнейм:")
 
-if search_query:
-    users = search_users_by_nickname(search_query)
-    if users:
-        for username, nickname, avatar_path in users:
-            col1, col2 = st.columns([1, 5])
-            with col1:
-                if avatar_path and os.path.exists(avatar_path):
-                    st.image(avatar_path, width=80)
-                else:
-                    st.image(AVATAR_PLACEHOLDER, width=80)
-            with col2:
-                st.subheader(nickname or username)
-                st.write(f"[@{username}](?user={username})")
-                if st.button(f"🔍 Открыть профиль {nickname or username}", key=username):
-                    st.query_params["user"] = username
-                    st.switch_page("pages/public_profile.py")
+if search_nickname:
+    user_data = get_user_data_by_nickname(search_nickname)
+    if user_data:
+        login, nickname, status, avatar_path, signup_date, last_login, about_me = user_data
+
+        st.subheader(f"👤 Профиль: {nickname}")
+        col1, col2 = st.columns([1, 3])
+
+        with col1:
+            if avatar_path and os.path.exists(avatar_path):
+                st.image(avatar_path, width=120)
+            else:
+                st.image("https://via.placeholder.com/120", width=120)
+
+        with col2:
+            st.markdown(f"**Username:** @{login}")
+            st.markdown(f"**Статус:** {status or 'Не указан'}")
+
+            st.markdown("### Дополнительная информация")
+            st.markdown(f"📅 **Дата регистрации:** {signup_date or 'Не указана'}")
+            st.markdown(f"🕒 **Последний вход:** {last_login or 'Не был выполнен'}")
+            st.markdown(f"📝 **Описание:** {about_me or 'Отсутствует'}")
     else:
-        st.info("Пользователь не найден.")
-else:
-    st.info("Введите часть никнейма для поиска.")
+        st.warning("Пользователь с таким никнеймом не найден.")

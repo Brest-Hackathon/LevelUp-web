@@ -16,6 +16,9 @@ translations = {
         "create_your_account": "Enter your account",
         "manage_your_account": "Manage your account",
         "try_it_out": "Try it out",
+        "community": "Community",
+        "join_chat": "Join our chat",
+        "forum": "Forum",
     },
     "ru": {
         "language_selection": "Выбор языка",
@@ -27,6 +30,9 @@ translations = {
         "create_your_account": "Войти в аккаунт",
         "manage_your_account": "Управление аккаунтом",
         "try_it_out": "Попробуйте",
+        "community": "Сообщество",
+        "join_chat": "Присоединяйтесь к чату",
+        "forum": "Форум",
     },
     "by": {
         "language_selection": "Выбар мовы",
@@ -38,6 +44,9 @@ translations = {
         "create_your_account": "Стварыць уліковы запіс",
         "manage_your_account": "Кіраванне ўліковым запісам",
         "try_it_out": "Паспрабуйце",
+        "community": "Супольнасць",
+        "join_chat": "Далучайцеся да чату",
+        "forum": "Форум",
     },
 }
 
@@ -67,6 +76,10 @@ pages = {
     ],
     t("your_account"): [
         st.Page("pages/account.py", title=t("Account settings")),
+    ],
+    "🌐 Community": [
+        st.Page("pages/community.py", title="Join our chat"),
+        st.Page("pages/forum.py", title="Forum"),
     ],
     t("resources"): [
         st.Page("pages/demo.py", title=t("try_it_out")),
